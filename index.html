@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中文闖關遊戲</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><text y=%2250%22 font-size=%2250%22>💌</text></svg>">
+  <link rel="stylesheet" href="style.css?v=fanwen-20260607-1" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar__title-group">
+        <div class="eyebrow">中文闖關遊戲</div>
+        <h1>範文全文闖關版</h1>
+      </div>
+      <div class="topbar__meta">
+        <span class="pill">語譯</span>
+        <span class="pill">內容理解</span>
+        <span class="pill">文言句式</span>
+        <span class="pill">寫作及修辭</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel panel--left">
+        <section class="card hero-card">
+          <div class="card__head">
+            <h2>開始闖關</h2>
+          </div>
+          <div class="card__body">
+            <p class="hero-card__desc">
+              本網站根據「範文全文」設計，集中考核學生對指定範文的語譯、內容、主旨、文言句式、寫作手法及修辭手法的掌握。<br>
+              每關共 <strong>30 題</strong>，答對率需達 <strong>70%</strong> 才可解鎖下一關。
+            </p>
+
+            <label class="field-label" for="playerName">角色名稱</label>
+            <input id="playerName" class="text-input" type="text" placeholder="例如：5A陳小文、3號考生" maxlength="30" />
+
+            <div class="button-row">
+              <button id="startBtn" class="btn btn--primary" type="button">開始本關</button>
+              <button id="rerollBtn" class="btn btn--secondary" type="button">重抽題目</button>
+            </div>
+
+            <div class="button-row">
+              <button id="loadSaveBtn" class="btn btn--secondary" type="button">讀取此角色進度</button>
+              <button id="resetSaveBtn" class="btn btn--secondary" type="button">重設此角色進度</button>
+            </div>
+
+            <div class="note-box">
+              <ul>
+                <li>每位學生以角色名稱獨立存檔</li>
+                <li>A / B / C / D 每次作答自動隨機排列</li>
+                <li>交卷後只顯示錯題解析</li>
+                <li>重新開啟網站後可繼續闖關</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="card map-card">
+          <div class="card__head">
+            <h2>闖關地圖</h2>
+          </div>
+          <div class="card__body">
+            <div id="stageMap" class="stage-map"></div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel panel--center">
+        <section class="card welcome-card" id="welcomeCard">
+          <div class="card__head">
+            <h2>範文練習說明</h2>
+          </div>
+          <div class="card__body">
+            <div class="welcome-grid">
+              <div class="welcome-item">
+                <div class="welcome-item__label">範圍</div>
+                <div class="welcome-item__value">範文全文</div>
+              </div>
+              <div class="welcome-item">
+                <div class="welcome-item__label">模式</div>
+                <div class="welcome-item__value">50 關闖關</div>
+              </div>
+              <div class="welcome-item">
+                <div class="welcome-item__label">每關題數</div>
+                <div class="welcome-item__value">30 題</div>
+              </div>
+              <div class="welcome-item">
+                <div class="welcome-item__label">過關門檻</div>
+                <div class="welcome-item__value">70%</div>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <p>考核重點：</p>
+              <ol>
+                <li>理解文言字詞及語譯。</li>
+                <li>掌握文章內容、人物形象及情節脈絡。</li>
+                <li>辨析主旨、段旨及作者思想。</li>
+                <li>辨認文言句式、論證方式、寫作手法及修辭手法。</li>
+                <li>進行不同範文之間的對讀比較。</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section class="card quiz-card" id="quizCard">
+          <div class="card__head">
+            <div>
+              <h2 id="quizTitle">尚未開始作答</h2>
+              <p class="subtext" id="quizSubtitle">請先輸入角色名稱，再開始本關。</p>
+            </div>
+            <div class="quiz-badges">
+              <span class="pill" id="currentStagePill">第 1 關</span>
+              <span class="pill" id="questionCountPill">0 / 30</span>
+            </div>
+          </div>
+
+          <div class="card__body">
+            <form id="quizForm" class="quiz-form"></form>
+
+            <div class="submit-row">
+              <button id="submitBtn" class="btn btn--primary btn--large" type="button" disabled>交卷</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card result-card" id="resultCard">
+          <div class="card__head">
+            <h2>本關結果</h2>
+          </div>
+          <div class="card__body">
+            <div id="resultSummary" class="result-summary empty-state">尚未作答</div>
+            <div id="wrongList" class="wrong-list"></div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="panel panel--right">
+        <section class="card status-card">
+          <div class="card__head">
+            <h2>即時狀態</h2>
+          </div>
+          <div class="card__body">
+            <div class="status-block">
+              <div class="status-label">角色</div>
+              <div id="playerNamePreview" class="status-value">未設定</div>
+            </div>
+
+            <div class="status-block">
+              <div class="status-label">目前關卡</div>
+              <div id="currentStageText" class="status-value">第 1 關</div>
+            </div>
+
+            <div class="status-block">
+              <div class="status-label">已解鎖</div>
+              <div id="unlockedStageText" class="status-value">第 1 關</div>
+            </div>
+
+            <div class="status-block">
+              <div class="status-label">作答計時</div>
+              <div id="timerText" class="timer-text">00:00</div>
+            </div>
+
+            <div class="status-block">
+              <div class="status-label">本關作答進度</div>
+              <div class="progress">
+                <div id="answerProgressBar" class="progress__bar"></div>
+              </div>
+              <div id="answerProgressText" class="progress-text">0 / 30</div>
+            </div>
+
+            <div class="status-block">
+              <div class="status-label">整體進度</div>
+              <div class="progress">
+                <div id="stageProgressBar" class="progress__bar"></div>
+              </div>
+              <div id="stageProgressText" class="progress-text">1 / 50</div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="bank-fanwen.js?v=fanwen-20260607-1"></script>
+  <script src="app.js?v=fanwen-20260607-1"></script>
+</body>
+</html>
